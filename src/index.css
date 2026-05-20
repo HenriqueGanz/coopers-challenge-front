@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Soleil';
+  src: local('Soleil Book'), local('Soleil'), local('Soleil Regular');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Soleil';
+  src: local('Soleil Semibold'), local('Soleil SemiBold'), local('Soleil Demi');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Soleil';
+  src: local('Soleil Bold');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* ---------- Tema e cores do figma Coopers ---------- */
+@theme {
+  --color-coopers-green: #4AC959;
+  --color-coopers-green-dark: #3aaa40;
+  --color-coopers-orange: #E88D39;
+  --color-coopers-black: #0e0e0e;
+  --color-coopers-navy: #06152B;
+  --color-coopers-border: #A1A1A1;
+  --color-coopers-muted: #999999;
+  --color-coopers-gray: #888888;
+  --color-coopers-gray-light: #f5f5f5;
+
+  --font-montserrat: 'Montserrat', system-ui, sans-serif;
+  --font-poppins: 'Poppins', system-ui, sans-serif;
+  --font-soleil: 'Soleil', 'Montserrat', system-ui, sans-serif;
+  --font-family-sans: 'Soleil', 'Montserrat', system-ui, sans-serif;
+
+  --breakpoint-xs: 375px;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+.font-montserrat {
+  font-family: var(--font-montserrat);
+}
+
+.font-poppins {
+  font-family: var(--font-poppins);
+}
+
+.font-soleil {
+  font-family: var(--font-soleil);
+}
+
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 0;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--color-coopers-green);
+  color: #fff;
+  font-family: var(--font-poppins);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+@keyframes todo-check-pop {
+  0% {
+    transform: scale(0.72);
+  }
+
+  65% {
+    transform: scale(1.12);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.todo-check-icon {
+  animation: todo-check-pop 220ms ease-out;
+  transform-origin: center;
+}
+
+.todo-check-pending-icon {
+  animation: todo-check-pop 260ms ease-out;
+  transform-origin: center;
+}
