@@ -78,10 +78,10 @@ export function HeroSection() {
       <button
         type="button"
         onClick={handleScrollToTodo}
-        className="absolute bottom-6 left-1/2 z-30 hidden -translate-x-1/2 rounded-full p-2 text-coopers-gray transition-colors hover:text-coopers-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coopers-green md:bottom-10 lg:block"
+        className="absolute left-1/2 z-30 hidden -translate-x-1/2 rounded-full pb-6 p-2 text-coopers-gray transition-colors hover:text-coopers-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coopers-green md:bottom-10 lg:block"
         aria-label="Ir para a seção To-do List"
       >
-        <svg width="20" height="28" viewBox="0 0 20 28" fill="none" aria-hidden="true">
+        <svg width="40" height="48" viewBox="0 0 20 28" fill="none" aria-hidden="true">
           <path
             d="M10 2V26M10 26L2 18M10 26L18 18"
             stroke="currentColor"
