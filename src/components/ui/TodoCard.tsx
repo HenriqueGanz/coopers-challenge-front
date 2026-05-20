@@ -3,6 +3,37 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { TodoItem } from './TodoItem';
 import type { Todo } from '../../types';
 
+function TodoDropPlaceholder({ column }: { column: 'todo' | 'done' }) {
+  const isDone = column === 'done';
+
+  return (
+    <li
+      aria-hidden="true"
+      className={[
+        'todo-drop-placeholder my-1 rounded-2xl border border-dashed p-2',
+        isDone
+          ? 'border-coopers-green/40 bg-coopers-green/[0.08]'
+          : 'border-coopers-orange/40 bg-coopers-orange/[0.08]',
+      ].join(' ')}
+    >
+      <div
+        className={[
+          'flex h-14 items-center rounded-xl border bg-white/85 px-4',
+          isDone ? 'border-coopers-green/15' : 'border-coopers-orange/15',
+        ].join(' ')}
+      >
+        <span
+          className={[
+            'h-2.5 w-2.5 rounded-full',
+            isDone ? 'bg-coopers-green/55' : 'bg-coopers-orange/55',
+          ].join(' ')}
+        />
+        <span className="ml-3 h-2.5 w-28 rounded-full bg-coopers-black/10" />
+      </div>
+    </li>
+  );
+}
+
 interface DragPreview {
   activeId: string;
   overId: string;
@@ -47,6 +78,8 @@ export function TodoCard({
   const isDone = column === 'done';
   const accentColor = isDone ? 'bg-coopers-green' : 'bg-coopers-orange';
   const { isOver, setNodeRef } = useDroppable({ id: `column-${column}` });
+  const isTargetColumn = dragPreview?.targetColumn === column;
+  const isCrossColumnTarget = isTargetColumn && dragPreview?.sourceColumn !== column;
   const activeIsInThisColumn = !!activeTodo && activeTodo.isDone === isDone;
   const visibleTodos = activeIsInThisColumn
     ? todos.filter((todo) => todo.id !== activeTodo?.id)
@@ -76,18 +109,10 @@ export function TodoCard({
 
     if (previewIndex === index && activeTodo) {
       nodes.push(
-        <li
+        <TodoDropPlaceholder
           key={`preview-${column}-${activeTodo.id}-${index}`}
-          aria-hidden="true"
-          className="mb-3 rounded-xl border-2 border-dashed border-coopers-green/70 bg-coopers-green/8 px-4 py-3"
-        >
-          <p className="text-xs font-poppins font-semibold uppercase tracking-[0.18em] text-coopers-green">
-            Preview
-          </p>
-          <p className="mt-1 truncate text-sm font-soleil text-coopers-black">
-            {activeTodo.text}
-          </p>
-        </li>,
+          column={column}
+        />, 
       );
     }
 
@@ -106,18 +131,10 @@ export function TodoCard({
 
   if (previewIndex === visibleTodos.length && activeTodo) {
     renderedRows.push(
-      <li
+      <TodoDropPlaceholder
         key={`preview-${column}-${activeTodo.id}-end`}
-        aria-hidden="true"
-        className="mt-1 rounded-xl border-2 border-dashed border-coopers-green/70 bg-coopers-green/8 px-4 py-3"
-      >
-        <p className="text-xs font-poppins font-semibold uppercase tracking-[0.18em] text-coopers-green">
-          Preview
-        </p>
-        <p className="mt-1 truncate text-sm font-soleil text-coopers-black">
-          {activeTodo.text}
-        </p>
-      </li>,
+        column={column}
+      />, 
     );
   }
 
@@ -147,7 +164,21 @@ export function TodoCard({
   return (
     <article
       aria-labelledby={headingId}
-      className="flex w-full max-w-sm flex-col overflow-hidden bg-white shadow-2xl lg:max-w-[24rem] xl:max-w-100"
+      className={[
+        'flex w-full max-w-sm flex-col overflow-hidden border bg-white transition-[border-color,box-shadow,transform,background-color] duration-200',
+        'lg:max-w-[24rem] xl:max-w-100',
+        isOver
+          ? isDone
+            ? 'border-coopers-green/45 bg-coopers-green/[0.02] shadow-[0_22px_48px_rgba(74,201,89,0.18)]'
+            : 'border-coopers-orange/45 bg-coopers-orange/[0.02] shadow-[0_22px_48px_rgba(232,141,57,0.18)]'
+          : isCrossColumnTarget
+            ? isDone
+              ? 'border-coopers-green/30 shadow-[0_20px_44px_rgba(74,201,89,0.14)]'
+              : 'border-coopers-orange/30 shadow-[0_20px_44px_rgba(232,141,57,0.14)]'
+            : isTargetColumn
+              ? 'border-coopers-black/8 shadow-[0_18px_40px_rgba(14,14,14,0.10)]'
+              : 'border-transparent shadow-2xl',
+      ].join(' ')}
     >
       <div className={`h-5 ${accentColor}`} aria-hidden="true" />
 
@@ -173,8 +204,14 @@ export function TodoCard({
       <div
         ref={setNodeRef}
         className={[
-          'flex-1 overflow-y-auto px-5 pb-6 transition-colors',
-          isOver ? 'bg-coopers-gray-light' : '',
+          'flex-1 overflow-y-auto px-5 pb-6 transition-[background-color] duration-200',
+          isOver
+            ? isDone
+              ? 'bg-coopers-green/[0.05]'
+              : 'bg-coopers-orange/[0.05]'
+            : isTargetColumn
+              ? 'bg-coopers-black/[0.015]'
+              : '',
         ].join(' ')}
       >
         {visibleTodos.length === 0 && previewIndex === null ? (

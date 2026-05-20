@@ -1,7 +1,9 @@
 import {
   DndContext,
-  PointerSensor,
+  DragOverlay,
+  MouseSensor,
   KeyboardSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   closestCenter,
@@ -16,6 +18,7 @@ import { useTodos } from '../../hooks/useTodos';
 import type { Todo } from '../../types';
 import { GUEST_TODO_PREVIEW } from '../../mocks/landing';
 import { TodoCard } from '../ui/TodoCard';
+import { TodoDragGhost } from '../ui/TodoItem';
 import { TodoPreviewCard } from '../ui/TodoPreviewCard';
 
 interface DragPreview {
@@ -65,9 +68,15 @@ export function TodoSection() {
     ? todos.find((todo) => todo.id === dragPreview.activeId) ?? null
     : null;
 
+  const dropAnimation = {
+    duration: 180,
+    easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+  };
+
   /* Sensores de mouse/touch + teclado */
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 140, tolerance: 10 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
@@ -244,6 +253,10 @@ export function TodoSection() {
                 onEraseAll={() => eraseAll('done')}
               />
             </div>
+
+            <DragOverlay dropAnimation={dropAnimation}>
+              {activeTodo ? <TodoDragGhost todo={activeTodo as Todo} /> : null}
+            </DragOverlay>
           </DndContext>
         )}
       </div>

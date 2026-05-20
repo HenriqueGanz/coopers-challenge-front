@@ -16,7 +16,7 @@ function createTodo(overrides: Partial<Todo>): Todo {
 }
 
 describe('TodoCard', () => {
-  it('renders a preview placeholder in the expected insertion slot during cross-column drag', () => {
+  it('renders a drop placeholder in the expected insertion slot during cross-column drag', () => {
     const todos = [
       createTodo({ id: 'todo-1', text: 'Primeira tarefa', position: 1 }),
       createTodo({ id: 'todo-2', text: 'Segunda tarefa', position: 2 }),
@@ -44,11 +44,10 @@ describe('TodoCard', () => {
       </DndContext>,
     );
 
-    const rows = Array.from(container.querySelectorAll('ul > li')).map((node) => node.textContent?.replace(/\s+/g, ' ').trim());
+    const rows = Array.from(container.querySelectorAll('ul > li'));
 
-    expect(rows[0]).toContain('Primeira tarefa');
-    expect(rows[1]).toContain('Preview');
-    expect(rows[1]).toContain('Mover para preview');
-    expect(rows[2]).toContain('Segunda tarefa');
+    expect(rows[0]?.textContent).toContain('Primeira tarefa');
+    expect(rows[1]).toHaveClass('todo-drop-placeholder');
+    expect(rows[2]?.textContent).toContain('Segunda tarefa');
   });
 });

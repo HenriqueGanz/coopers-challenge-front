@@ -1,7 +1,30 @@
+import type { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useContact } from '../../hooks/useContact';
 import { contactSchema, type ContactInput } from '../../types';
+
+function formatTelephone(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+
+  if (digits.length === 0) return '';
+  if (digits.length <= 2) return `(${digits}`;
+
+  const areaCode = digits.slice(0, 2);
+  const remainder = digits.slice(2);
+
+  if (digits.length <= 6) {
+    return `(${areaCode}) ${remainder}`;
+  }
+
+  if (digits.length <= 10) {
+    return `(${areaCode}) ${remainder.slice(0, 4)}-${remainder.slice(4)}`;
+  }
+
+  return `(${areaCode}) ${remainder.slice(0, 1)} ${remainder.slice(1, 5)}-${remainder.slice(5)}`;
+}
+
+type ContactFormValues = z.input<typeof contactSchema>;
 
 /**
  * ContactSection Get in Touch
@@ -14,15 +37,22 @@ export function ContactSection() {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
-  } = useForm<ContactInput>({
+  } = useForm<ContactFormValues, unknown, ContactInput>({
     resolver: zodResolver(contactSchema),
   });
+
+  const watchedTelephone = watch('telephone');
+  const telephoneValue = typeof watchedTelephone === 'string' ? watchedTelephone : '';
 
   const onSubmit = async (data: ContactInput) => {
     await submitContact(data);
     reset();
   };
+
+  const { ref: telephoneRef, ...telephoneField } = register('telephone');
 
   return (
     <section
@@ -168,12 +198,22 @@ export function ContactSection() {
                   required
                   autoComplete="tel"
                   inputMode="tel"
-                  placeholder="( ) ____-____"
+                  placeholder="(41) 9 9753-8745"
                   aria-required="true"
                   aria-invalid={errors.telephone ? 'true' : 'false'}
                   aria-describedby={errors.telephone ? 'contact-telephone-error' : undefined}
                   className="w-full rounded border border-coopers-navy px-4 py-3 text-sm font-soleil font-normal text-coopers-black placeholder:text-[#9A9A9A] focus:border-coopers-green focus:outline-none transition-colors"
-                  {...register('telephone')}
+                  maxLength={16}
+                  value={formatTelephone(telephoneValue)}
+                  {...telephoneField}
+                  ref={telephoneRef}
+                  onChange={(event) => {
+                    setValue('telephone', formatTelephone(event.target.value), {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                      shouldValidate: true,
+                    });
+                  }}
                 />
                 {errors.telephone && (
                   <p id="contact-telephone-error" role="alert" className="mt-1 text-xs text-red-500">

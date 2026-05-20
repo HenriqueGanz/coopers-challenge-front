@@ -58,10 +58,18 @@ export const createTodoSchema = z.object({
   text: z.string().min(1, 'Tarefa não pode ser vazia'),
 });
 
+const telephoneSchema = z.preprocess(
+  (value) => (typeof value === 'string' ? value.replace(/\D/g, '') : value),
+  z
+    .string()
+    .min(10, 'O telefone deve ter no minimo 10 números')
+    .max(11, 'O telefone deve ter no máximo 11 números'),
+);
+
 export const contactSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   email: z.string().email('E-mail inválido'),
-  telephone: z.string().min(10, 'O telefone deve ter no minimo 10 números').max(11, 'O telefone deve ter no máximo 11 números'),
+  telephone: telephoneSchema,
   message: z.string().min(10, 'Mensagem deve ter pelo menos 10 caracteres'),
 });
 
