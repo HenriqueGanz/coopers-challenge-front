@@ -28,11 +28,11 @@ export function CarouselCard({ post }: Props) {
 
       <img
         src="/coopers_chevrons.svg"
-        alt=""
+        alt="Seta verde apontando para a esquerda"
         aria-hidden="true"
         loading="lazy"
         decoding="async"
-        className="pointer-events-none absolute -right-3 top-[45%] z-20 h-8 w-auto -translate-y-1/2 sm:h-10 md:right-3 md:h-12"
+        className="pointer-events-none absolute right-2 top-[41%] z-20 h-8 w-auto -translate-y-1/2 sm:h-10 md:right-3 md:h-12"
       />
 
       <div className="flex flex-1 flex-col px-5 py-5 sm:px-6 sm:py-6">
